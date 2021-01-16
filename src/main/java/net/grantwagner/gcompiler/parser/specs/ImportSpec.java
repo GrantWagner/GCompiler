@@ -8,20 +8,20 @@ import net.grantwagner.gcompiler.tokenizer.model.Token;
 import net.grantwagner.gcompiler.tokenizer.model.TokenType;
 
 /**
- * PackageSpec => PackageKeyword
- *                (Identifier PackageSeperator)* 
- *                Identifier
- *                CommandSeperator
- *                
- * Returns: the package name
+ * ImportSpec => ImportKeyWord 
+ *               (Identifier PackageSeperator)* 
+ *               TypeIdentifier
+ *               CommandSeperator
+ *               
+ * Returns: the package name and type name
  */
-public class PackageSpec {
+public class ImportSpec {
   public static String parse(Tokenizer tokenizer) throws IOException {
-    String packName = "";
+    String importName = "";
 
     Token token = tokenizer.nextToken();
     if (token.getType() != TokenType.KEYWORD
-      || !token.getValue().equals(KeyWords.PACKAGE)) {
+      || !token.getValue().equals(KeyWords.IMPORT)) {
       //do error handling
       return "";
     }
@@ -31,11 +31,11 @@ public class PackageSpec {
       if (token.getType() != TokenType.IDENTIFIER ) {
         //do error handling
       }
-      packName += token.getValue();
+      importName += token.getValue();
   
       token = tokenizer.nextToken();
       if (token.getType() == TokenType.PackageSeperator) {
-        packName += ".";
+        importName += ".";
       } else if (token.getType() == TokenType.CommandSeperator) {
         break;
       } else {
@@ -43,6 +43,6 @@ public class PackageSpec {
       }
     }
     
-    return packName;
+    return importName;
   }
 }

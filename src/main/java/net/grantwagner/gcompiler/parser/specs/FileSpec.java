@@ -11,8 +11,11 @@ public class FileSpec {
     ProgramSymbols symbols = new ProgramSymbols();
 
     String packName = PackageSpec.parse(tokenizer);
-    System.out.print("Package is " + packName);
-    
+    System.out.println("Package is " + packName);
+
+    String importName = ImportSpec.parse(tokenizer);
+    System.out.println("Import is " + importName);
+
     return symbols;
   }
 

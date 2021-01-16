@@ -1,6 +1,6 @@
 package net.grantwagner.gtest;
 
-import System.IO.Log
+import System.IO.Log;
 
 //TODO, this should
 //void main(List<String> args) {}

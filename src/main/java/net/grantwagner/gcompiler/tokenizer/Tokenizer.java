@@ -91,7 +91,8 @@ public class Tokenizer {
   Collection<Character> knownChars = new HashSet<>();
   
   Collection<String> keywords = Set.of(
-    KeyWords.PACKAGE
+    KeyWords.PACKAGE,
+    KeyWords.IMPORT
   );
 
   BufferedReader br;
@@ -154,10 +155,9 @@ public class Tokenizer {
   }
 
   private char readChar() throws IOException {
-    if (lineIndex >= line.length()) {
+    while (lineIndex >= line.length()) {
       line = br.readLine();
       lineIndex = 0;
-      return '\n';
     }
     
     char response = line.charAt(lineIndex);
