@@ -9,65 +9,7 @@ import java.util.List;
 
 import net.grantwagner.gcompiler.parser.Parser;
 
-/**
- * Language Spec
- * 
- * FileSpec => PackageSpec
- *         ImportSpec*
- *         (FunctionSpec|StructSpec)+
- *         
- * PackageSpec => PackageKeyword
- *                (Identifier PackageSeperator)* 
- *                Identifier
- *                CommandSeperator
- *                
- * ImportSpec => ImportKeyWord 
- *               (Identifier PackageSeperator)* 
- *               TypeIdentifier
- *               CommandSeperator
- *                
- * FunctionSpec => TypeIdentifier 
- *                 FunctionIdentifier
- *                 ArgStart
- *                 (TypeIdentifier ParameterIdentifier ArgSeperator)*
- *                 (TypeIdentifier ParameterIdentifier)?
- *                 ArgStop
- *                 ScopeStart
- *                 (Command CommandSeperator)*
- *                 ScopeStop
- *                
- * StructSpec => TypeIdentifier
- *               (ExtendsKeyword TypeIdentifier)?
- *               ScopeStart
- *               (TypeIdentifier ParameterIdentifier CommandSeperator)*
- *               ScopeStop
- *               
- * Command => Declaration ||
- *            FunctionCall || 
- *            ForLoop || 
- *            ForEachLoop ||
- *            WhileLoop ||
- *            IfStatement ||
- *            Return
- *            
- *                
- * Identifier       => [a-zA-Z][a-zA-Z0-9]+ && ^KeyWord
- * 
- * ImportKeyWord    => "import"
- * ExtendsKeyword   => "extends"
- * 
- * PackageSeperator => "."
- * CommandSeperator => "."
- * ArgStart         => "("
- * ArgStop          => ")"
- * ArgSeperator     => ","
- * ScopeStart       => "{"
- * ScopeStop        => "}"
- *
- * TODO VarArgs
- * TODO FunctionReferences
- * TODO Generics?
- */
+           
 public class Main {
   public static void main(String[] args) throws URISyntaxException, IOException {
     
