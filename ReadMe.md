@@ -40,7 +40,11 @@ Reads G files, and compiles to C files. Compiler Written in Java.
 ### Language Spec
 FileSpec => PackageSpec
         ImportSpec*
-        (FunctionSpec|StructSpec)+
+        (
+          FunctionSpec ||
+          StructSpec ||
+          Declaration
+        )+
 eg: /GCompiler/src/main/resources/TestProgram/GTest.g
         
 PackageSpec => PackageKeyword
@@ -66,38 +70,122 @@ FunctionSpec => TypeIdentifier
                 ScopeStop
 eg:                 
                
-StructSpec => TypeIdentifier
+StructSpec => StructKeyword
+              TypeIdentifier
               (ExtendsKeyword TypeIdentifier)?
               ScopeStart
               (TypeIdentifier ParameterIdentifier CommandSeperator)*
               ScopeStop
-
+eg: struct LinkedList extends Collection {
+  ListNode head;
+}
+  
 Command => Declaration ||
-           Expression || 
            Assignment ||
-           ForLoop || 
-           ForEachLoop ||
            WhileLoop ||
            IfStatement ||
            Return
+           Expression || 
+  
+Declaration => TypeIdentifier
+               VariableIdentifier
+               (
+                 AssignmentOperator
+                 Expression
+               )?
+               CommandSeperator
+eg: Number pi = 3.1415;
 
-Declaration => 
+Assignment => VariableIdentifier 
+              AssignmentOperator
+              Expression
+              CommandSeperator
+eg: pi = 3.1415;
 
-Expression =>
-Assignment =>
-ForLoop =>
-ForEachLoop =>
-WhileLoop =>
-IfStatement =>
-Return =>
+WhileLoop => WhileKeyword
+             ArgStart
+             BooleanExpression
+             ArgStop
+             ScopeStart
+             (Command CommandSeperator)*
+             ScopeStop
+eg: while( continue == true ) {
+  //do stuff
+}
+
+IfStatement => IfKeyword
+               ArgStart
+               BooleanExpression
+               ArgStop
+               ScopeStart
+               (Command CommandSeperator)*
+               ScopeStop
+               (
+                 ElseKeyword
+                 IfKeyword
+                 ArgStart
+                 BooleanExpression
+                 ArgStop
+                 ScopeStart
+                 (Command CommandSeperator)*
+                 ScopeStop
+               )*
+               (
+                 ElseKeyword
+                 ScopeStart
+                 (Command CommandSeperator)*
+                 ScopeStop
+               )*
+eg: if( state == 1 ) {
+  color = red;
+else if( state == 2 ) {
+  color = green; 
+} else {
+  color = yellow;
+} 
+
+Return => ReturnKeyword
+          Expression
+          CommandSeperator
+eg: return true;
+
+Expression  => ( Expression )
+               Expression * Expression 
+               Expression / Expression 
+               Expression + Expression 
+               Expression - Expression 
+               ! Expression
+               Expression & Expression 
+               Expression | Expression 
+               Expression == Expression 
+               FunctionCall
+               VarIdentifier
+               Literals*
+Listed in order of precedence
+
+FunctionCall => FunctionIdentifier
+                ArgStart
+                (Expression ArgSeperator)*
+                Expression?
+                ArgStop
+                CommandSeperator
            
-
-
 ### Tokenizer Spec
-Identifier       => [a-zA-Z][a-zA-Z0-9]+ && ^KeyWord
+By Convention, all Strings are "camelCased". packages, variables, and functions start lower case, constants and types start uppercase
+Identifier       => [a-zA-Z][a-zA-Z0-9_]+ && ^KeyWord
 
-ImportKeyWord    => "import"
-ExtendsKeyword   => "extends"
+Keywords => "package"
+            "import"
+            "struct"
+            "extends"
+            "while"
+            "if"
+            "else"
+            "return"
+            "true"
+            "false"
+
+Comments are started by "//", and are ended by "\n"
 
 PackageSeperator => "."
 CommandSeperator => "."
@@ -106,6 +194,18 @@ ArgStop          => ")"
 ArgSeperator     => ","
 ScopeStart       => "{"
 ScopeStop        => "}"
+
+### Literals
+UTF-8 is the only form of text encoding supported. 
+C style escape sequences https://en.cppreference.com/w/c/language/escape.
+
+booleanLiterals => "true" || "false"
+charLiteral => any char, encased in single quotes. '\' to escape a single quote only
+stringLiteral => any string of chars, encsed in double quotes
+numeric literal => [0-9]+ 
+                   ([./][0-9]+)?
+                   ([e][0-9]+)?
+                   [i]?
 
 ### Standard Library, with C implementations
 Any function that an operator is an alias for
@@ -135,6 +235,7 @@ StdLib extensions:
 * UI
 * Markdown parsing and rendering
 * Spellchecking
+* Regex
 * "GSon" parsing,writing and formating (Json, no comma, extended numeric representation, comments
   
 ## V3
