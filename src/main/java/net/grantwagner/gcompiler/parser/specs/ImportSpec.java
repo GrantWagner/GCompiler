@@ -1,7 +1,6 @@
 package net.grantwagner.gcompiler.parser.specs;
 
-import java.io.IOException;
-
+import net.grantwagner.gcompiler.parser.ParseException;
 import net.grantwagner.gcompiler.tokenizer.Tokenizer;
 import net.grantwagner.gcompiler.tokenizer.model.KeyWords;
 import net.grantwagner.gcompiler.tokenizer.model.Token;
@@ -16,20 +15,19 @@ import net.grantwagner.gcompiler.tokenizer.model.TokenType;
  * Returns: the package name and type name
  */
 public class ImportSpec {
-  public static String parse(Tokenizer tokenizer) throws IOException {
+  public static String parse(Tokenizer tokenizer) throws ParseException {
     String importName = "";
 
     Token token = tokenizer.nextToken();
     if (token.getType() != TokenType.KEYWORD
       || !token.getValue().equals(KeyWords.IMPORT)) {
-      //do error handling
-      return "";
+      throw new ParseException();
     }
 
     while (true) {
       token = tokenizer.nextToken();
       if (token.getType() != TokenType.IDENTIFIER ) {
-        //do error handling
+        throw new ParseException();
       }
       importName += token.getValue();
   
@@ -39,7 +37,7 @@ public class ImportSpec {
       } else if (token.getType() == TokenType.CommandSeperator) {
         break;
       } else {
-        //TODO error checking
+        throw new ParseException();
       }
     }
     

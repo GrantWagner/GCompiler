@@ -22,7 +22,6 @@ Major features:
 * functions should return "this" instead of void, if possible.
 * even if used in a method with a simpler data type, the reference type will be maintained. For example
 
-
 * There are *NO* base data types. All data storage is by struct. There 6 "basic" structs, that will be hand coded. 
 ** Object, which is empty
 ** Void, a special case filler, used to explicitly represent no data during function definition

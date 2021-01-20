@@ -1,13 +1,13 @@
 package net.grantwagner.gcompiler.tokenizer;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import net.grantwagner.gcompiler.parser.ParseException;
 import net.grantwagner.gcompiler.tokenizer.model.KeyWords;
 import net.grantwagner.gcompiler.tokenizer.model.Token;
 import net.grantwagner.gcompiler.tokenizer.model.TokenType;
@@ -95,12 +95,12 @@ public class Tokenizer {
     KeyWords.IMPORT
   );
 
-  BufferedReader br;
+  RandomAccessFile br;
   String line; 
   int lineIndex;
 
   public Tokenizer(File file) throws IOException {
-    br = new BufferedReader(new FileReader(file)); 
+    br = new RandomAccessFile(file, "r"); 
     line = br.readLine();
     lineIndex = 0;
     
@@ -113,7 +113,7 @@ public class Tokenizer {
     br.close();
   }
 
-  public Token nextToken() throws IOException {
+  public Token nextToken() throws ParseException {
     //eat unknown chars
     char nextChar;
     do {
@@ -154,9 +154,13 @@ public class Tokenizer {
         TokenType.IDENTIFIER);
   }
 
-  private char readChar() throws IOException {
+  private char readChar() throws ParseException {
     while (lineIndex >= line.length()) {
-      line = br.readLine();
+      try {
+        line = br.readLine();
+      } catch (IOException e) {
+        throw new ParseException();
+      }
       lineIndex = 0;
     }
     
@@ -169,4 +173,25 @@ public class Tokenizer {
     lineIndex++;
   }
 
+  public TokenizerState getState() {
+    try {
+      TokenizerState state = new TokenizerState()
+        .setReaderIndex(br.getFilePointer())
+        .setLine(line)
+        .setLineIndex(lineIndex);
+      return state;
+    } catch (IOException e) {
+      throw new RuntimeException("Failed getting state", e);
+    }
+  }
+
+  public void setState(TokenizerState tokenizerState) {
+    try {
+      br.seek(tokenizerState.getReaderIndex());
+      line = tokenizerState.getLine();
+      lineIndex = tokenizerState.getLineIndex();
+    } catch (IOException e) {
+      throw new RuntimeException("Failed getting state", e);
+    }
+  }
 }
