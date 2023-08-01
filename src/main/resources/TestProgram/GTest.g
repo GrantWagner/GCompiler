@@ -2,13 +2,9 @@ package net.grantwagner.gtest;
 
 import System.IO.Log;
 import System.Collections.List;
+import System.OS.ResponseCodes
 
-//TODO, this should
-//Number main(List<String> args) {
-//  Log.print("Hello World");
-//  return OSReturn.SUCCESS;
-//}
-
-Void main() {
+Number main(List<String> args) {
   Log.print("Hello World");
+  return ResponseCodes.SUCCESS;
 }
