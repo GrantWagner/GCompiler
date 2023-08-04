@@ -20,37 +20,37 @@ Major features:
 * memory will be managed by reference counting. If it exists, a delete method will be called to remove any internal circular references.
 
 * The only base objects are:
-  ** String: a memory managed, immutable collection of characters. There is no character object, only strings of length one.
-  ** Number: a memory managed, immutable value. It's stored internally as 3 varable length integers (java BigInts like), for the numerator, denominator, and imaginary portions. Irrational numbers (eg pi, root(2)) will still need to be approximated, with their precision TBD. Maybe I want to add flags for multiples of known https://en.wikipedia.org/wiki/Transcendental_number and a seperate root portion. Literals have the form of (-)[0-9]+(o[1-9][0-9]*)?(i[1-9][0-9]*)?
-  ** Boolean: either True or False
-  ** Void: a filler for no object, which is only valid for method returns
+  * String: a memory managed, immutable collection of characters. There is no character object, only strings of length one.
+  * Number: a memory managed, immutable value. It's stored internally as 3 varable length integers (java BigInts like), for the numerator, denominator, and imaginary portions. Irrational numbers (eg pi, root(2)) will still need to be approximated, with their precision TBD. Maybe I want to add flags for multiples of known https://en.wikipedia.org/wiki/Transcendental_number and a seperate root portion. Literals have the form of (-)[0-9]+(o[1-9][0-9]*)?(i[1-9][0-9]*)?
+  * Boolean: either True or False
+  * Void: a filler for no object, which is only valid for method returns
 * ala C, structs are a collection of data items. There is no access limitation (similar to java public fields)
-  ** If there exists a get*Field*(struct) or set*Field*(Struct, Model) method, they will be called on access
-  ** the methods equals, hash, toString are generated at compile time using recursive object reflection.
-  ** .function(param) (leading period) is a shortcut for void function(struct, param). and will return the struct for chaining.
+  * If there exists a get*Field*(struct) or set*Field*(Struct, Model) method, they will be called on access
+  * the methods equals, hash, toString are generated at compile time using recursive object reflection.
+  * .function(param) (leading period) is a shortcut for void function(struct, param). and will return the struct for chaining.
 * ala Java, structs can have single inheritance. If not explicitly defined, each struct inherits a empty struct named Object
 * ala Java, structs are instantiated with new, and instances are inherently references. References will be automatically deleted when they go out of scope.
-   ** if they exist, Void new(Struct) and Void delete(Struct) will be called.
-   ** Void new(Struct, params...) will enforce some parameters. 
+  * if they exist, Void new(Struct) and Void delete(Struct) will be called.
+  * Void new(Struct, params...) will enforce some parameters. 
 
 * functions have the same structor are c style functions
-   ** decliration: <GenericType1...> ReturnType name(ParamType paramName1...)
+  * decliration: <GenericType1...> ReturnType name(ParamType paramName1...)
 * functions should attempt to be null safe. For example List.size(null) == 0, not an exception
 * functions should return "this" instead of void, if possible.
 * even if used in a method with a simpler data type, the reference type will be maintained. For example
 * Generics are supported, with a syntax that mirrors java. More specific values are always allowed, and their type will be maintained respected.
-   ** for example, a method of <Type> Type doSomething(Type input) { return input;}, if called with a struct of SubType extends Type, will still return an instance of SubType, not just Type. This is more simlar to java's <? extends Type>.
+  * for example, a method of <Type> Type doSomething(Type input) { return input;}, if called with a struct of SubType extends Type, will still return an instance of SubType, not just Type. This is more simlar to java's <? extends Type>.
 
 * Standard Library will have the following packages:
-   ** System.IO, methods to work with enhanced style serial terms. Includes methods to get and set cursor location, and to get or set current colors for background and forgrounds, allowing for rich text displays (
-  ** System.Collection, Structs and methods for working with collections. Will support List, Sets and Maps
-  ** System.OS, methods and constants for working with the OS and Threads.
-  ** System.File, Tools for working with the file system, including the listing of directories and the streaming of both binary and text files.
-  ** system.UI, Tools for working with UI Windows and Widgets. The frame buffer widget needed for System.Graphics will be part of this.
-  ** System.Graphics, Tools for working with frame buffers, especially image loading, saving, display parameters setting and querying, and dynamic blitting.
-    ** System.GraphicsV2 will be added if/when we have tilemap/sprite support
-    ** System.GraphicsV3 will be added if/when we have 3D support, with methods for defining triangles, materials, and shaders.
-  ** System.Audio, loadSound, startSound, soundStatus functions. Maybe expand into synths? FM or Midi?
+  * System.IO, methods to work with enhanced style serial terms. Includes methods to get and set cursor location, and to get or set current colors for background and forgrounds, allowing for rich text displays (
+  * System.Collection, Structs and methods for working with collections. Will support List, Sets and Maps
+  * System.OS, methods and constants for working with the OS and Threads.
+  * System.File, Tools for working with the file system, including the listing of directories and the streaming of both binary and text files.
+  * system.UI, Tools for working with UI Windows and Widgets. The frame buffer widget needed for System.Graphics will be part of this.
+  * System.Graphics, Tools for working with frame buffers, especially image loading, saving, display parameters setting and querying, and dynamic blitting.
+    * System.GraphicsV2 will be added if/when we have tilemap/sprite support
+    * System.GraphicsV3 will be added if/when we have 3D support, with methods for defining triangles, materials, and shaders.
+  * System.Audio, loadSound, startSound, soundStatus functions. Maybe expand into synths? FM or Midi?
 
 # RoadMap
 ## V1
