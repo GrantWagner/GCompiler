@@ -2,35 +2,55 @@
 
 A Compiler for the G programming language.
 
-An attempt at writing my own programming language. Inspirations are C and Java. The language is functional, but attempts to support complex POGO (Plain Old G Objects) in the same manor as most object oriented languages. By being functional, the requirements of service injection frameworks will be negated. By allowing methods to be redefined, mocking frameworks will be unnecessary. With objects not having "methods" and some nice auto-generated functions, boilerplate removal frameworks like Lombok should be unnecessary.
+An attempt at writing my own programming language. Inspirations are C and Java. 
 
 Yes, it's G because I am a little narcissistic.
+
+Goals:
+* The language is functional, but attempts to support complex POGOs (Plain Old G Objects) in the same manor as most object oriented languages.
+* By being functional, the requirements of service injection frameworks will be negated.
+* By allowing methods to be redefined, mocking frameworks will be unnecessary.
+* With objects not having "methods" and some nice auto-generated functions, boilerplate removal frameworks like Lombok should be unnecessary.
+
 
 Major features:
 * A file can have any name and path, as long as it's under the project base path. Source code extension is ".g"
 * ala Java, each file is defined in the context of a package.
-* each file can have any combination of struct and function definitions
+* each file can have any combination of struct and function definitions.
 * memory will be managed by reference counting. If it exists, a delete method will be called to remove any internal circular references.
 
-* ala C, structs are a collection data items. There is no access limitation (similar to java public fields)
-* ala Java, structs can have single inheritance. If not explicitly defined, each struct inherits a base Object
-* for each struct, methods equals, hashcode, deepCopy and toString will be created, which work against all fields recursively. Attempts to mimic smarter reflection based versions of their java counterparts.
+* The only base objects are:
+  ** String: a memory managed, immutable collection of characters. There is no character object, only strings of length one.
+  ** Number: a memory managed, immutable value. It's stored internally as 3 varable length integers (java BigInts like), for the numerator, denominator, and imaginary portions. Irrational numbers (eg pi, root(2)) will still need to be approximated, with their precision TBD. Maybe I want to add flags for multiples of known https://en.wikipedia.org/wiki/Transcendental_number and a seperate root portion. Literals have the form of (-)[0-9]+(o[1-9][0-9]*)?(i[1-9][0-9]*)?
+  ** Boolean: either True or False
+  ** Void: a filler for no object, which is only valid for method returns
+* ala C, structs are a collection of data items. There is no access limitation (similar to java public fields)
+  ** If there exists a get*Field*(struct) or set*Field*(Struct, Model) method, they will be called on access
+  ** the methods equals, hash, toString are generated at compile time using recursive object reflection.
+  ** .function(param) (leading period) is a shortcut for void function(struct, param). and will return the struct for chaining.
+* ala Java, structs can have single inheritance. If not explicitly defined, each struct inherits a empty struct named Object
 * ala Java, structs are instantiated with new, and instances are inherently references. References will be automatically deleted when they go out of scope.
+   ** if they exist, Void new(Struct) and Void delete(Struct) will be called.
+   ** Void new(Struct, params...) will enforce some parameters. 
 
-* functions are like c functions
+* functions have the same structor are c style functions
+   ** decliration: <GenericType1...> ReturnType name(ParamType paramName1...)
 * functions should attempt to be null safe. For example List.size(null) == 0, not an exception
 * functions should return "this" instead of void, if possible.
 * even if used in a method with a simpler data type, the reference type will be maintained. For example
+* Generics are supported, with a syntax that mirrors java. More specific values are always allowed, and their type will be maintained respected.
+   ** for example, a method of <Type> Type doSomething(Type input) { return input;}, if called with a struct of SubType extends Type, will still return an instance of SubType, not just Type. This is more simlar to java's <? extends Type>.
 
-* There are *NO* base data types. All data storage is by struct. There 6 "basic" structs, that will be hand coded. 
-** Object, which is empty
-** Void, a special case filler, used to explicitly represent no data during function definition
-** Boolean, which contains a single true/false value. Literals are defined by keywords "true" and "false".
-** Number, which will separately store a integer, fractional, and imaginary coefficients as arbitrary precision integers. Attempts to duplicate the functionality of java's big number. 
-** Char
-** String
-
-
+* Standard Library will have the following packages:
+   ** System.IO, methods to work with enhanced style serial terms. Includes methods to get and set cursor location, and to get or set current colors for background and forgrounds, allowing for rich text displays (
+  ** System.Collection, Structs and methods for working with collections. Will support List, Sets and Maps
+  ** System.OS, methods and constants for working with the OS and Threads.
+  ** System.File, Tools for working with the file system, including the listing of directories and the streaming of both binary and text files.
+  ** system.UI, Tools for working with UI Windows and Widgets. The frame buffer widget needed for System.Graphics will be part of this.
+  ** System.Graphics, Tools for working with frame buffers, especially image loading, saving, display parameters setting and querying, and dynamic blitting.
+    ** System.GraphicsV2 will be added if/when we have tilemap/sprite support
+    ** System.GraphicsV3 will be added if/when we have 3D support, with methods for defining triangles, materials, and shaders.
+  ** System.Audio, loadSound, startSound, soundStatus functions. Maybe expand into synths? FM or Midi?
 
 # RoadMap
 ## V1
